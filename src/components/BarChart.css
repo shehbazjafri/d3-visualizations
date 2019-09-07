@@ -1,0 +1,19 @@
+.container {
+  width: 100%;
+}
+
+.bar {
+  width: 25px;
+  height: 100px;
+  display: inline-block;
+  background-color: blue;
+  margin: 2px;
+}
+
+.bar:hover {
+  fill: brown;
+}
+
+svg {
+  background-color: pink;
+}

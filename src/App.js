@@ -17,10 +17,7 @@ function App(props) {
           <React.Fragment>
             <header>D3 Visualizations</header>
             <div className="container">
-              <button
-                className="bar button"
-                onClick={() => openVis("bar-chart")}
-              >
+              <button className="button" onClick={() => openVis("bar-chart")}>
                 Bar Chart
               </button>
             </div>
