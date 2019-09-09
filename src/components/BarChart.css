@@ -3,10 +3,8 @@
 }
 
 .bar {
-  width: 25px;
-  height: 100px;
   display: inline-block;
-  background-color: blue;
+  fill: skyblue;
   margin: 2px;
 }
 
@@ -15,5 +13,5 @@
 }
 
 svg {
-  background-color: pink;
+  background-color: whitesmoke;
 }
