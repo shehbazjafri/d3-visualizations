@@ -30,16 +30,37 @@ export default function BarChart() {
     // Create group
     const g = svg.append("g").attr("transform", `translate(${100},${100})`);
 
+    let tooltip = d3
+      .select("#barchart")
+      .append("div")
+      .attr("class", "tooltip")
+      .attr("id", "tooltip")
+      .style("opacity", 0);
+
     d3.json(
       "https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/GDP-data.json"
     ).then(function(data) {
       xScale.domain(data.data.map(d => d[0]));
       yScale.domain([0, d3.max(data.data, d => d[1])]);
 
+      const indicesBetweenPoints = Math.round(data.data.length / 14);
       g.append("g")
         .attr("id", "x-axis")
         .attr("transform", `translate(0,${height})`)
-        .call(xAxis);
+        .call(
+          xAxis
+            .tickFormat(d => {
+              const date = d.split("-");
+              return date[0];
+            })
+            .tickValues(
+              data.data
+                .map((d, i) =>
+                  i % indicesBetweenPoints === 0 ? d[0] : undefined
+                )
+                .filter(item => item)
+            )
+        );
 
       g.append("g")
         .attr("id", "y-axis")
@@ -73,6 +94,23 @@ export default function BarChart() {
         .attr("width", xScale.bandwidth())
         .attr("height", function(d) {
           return height - yScale(d[1]);
+        })
+        .on("mouseover", function(d) {
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0.9);
+          tooltip
+            .html(d[0] + ": " + d[1])
+            .style("left", d3.event.pageX + 20 + "px")
+            .style("top", d3.event.pageY + 20 + "px");
+          tooltip.attr("data-date", d[0]);
+        })
+        .on("mouseout", function(d) {
+          tooltip
+            .transition()
+            .duration(400)
+            .style("opacity", 0);
         });
     });
   };
