@@ -30,7 +30,7 @@ function App(props) {
 }
 
 export default () => (
-  <Router>
+  <Router basename="/d3-visualizations">
     <Route component={App} />
   </Router>
 );
