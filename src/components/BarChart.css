@@ -1,5 +1,9 @@
 .container {
+  grid-area: c;
   width: 100%;
+  background: rgb(146, 146, 146);
+  text-align: center;
+  height: 100vh;
 }
 
 .bar {
@@ -14,6 +18,8 @@
 
 svg {
   background-color: whitesmoke;
+  height: 100vh;
+  text-align: center;
 }
 
 .tooltip {
@@ -23,8 +29,8 @@ svg {
   height: auto;
   padding: 2px;
   font: 12px sans-serif;
-  background: lavender;
-  border: 0px;
+  background: whitesmoke;
+  border: 0;
   border-radius: 8px;
   pointer-events: none;
 }

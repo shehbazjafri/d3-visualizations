@@ -16,7 +16,7 @@ function App(props) {
         render={props => (
           <React.Fragment>
             <header>D3 Visualizations</header>
-            <div className="container">
+            <div className="visualization-selectors">
               <button className="button" onClick={() => openVis("bar-chart")}>
                 Bar Chart
               </button>
