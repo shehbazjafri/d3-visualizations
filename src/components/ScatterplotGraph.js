@@ -16,12 +16,9 @@ export default function ScatterplotGraph() {
       .attr("width", svgWidth)
       .attr("height", svgHeight);
 
-    const xScale = d3
-      .scaleBand()
-      .range([0, width])
-      .padding(0.4);
+    const xScale = d3.scaleLinear().range([0, width]);
 
-    const yScale = d3.scaleLinear().range([height, 0]);
+    const yScale = d3.scaleTime().range([0, height]);
 
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale);
@@ -31,43 +28,44 @@ export default function ScatterplotGraph() {
     d3.json(
       "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json"
     ).then(function(data) {
-      const formatTime = d3.timeFormat("%M:%S"),
-        formatMinutes = function(m, s = 0) {
-          return formatTime(new Date(2012, 0, 1, 0, m, s));
-        },
-        getDate = function(m, s) {
-          return new Date(2012, 0, 1, 0, m, s);
-        };
+      const formatTime = d3.timeFormat("%M:%S");
 
-      xScale.domain(data.map(d => d.Year));
+      data.forEach(function(d) {
+        d.Place = +d.Place;
+        var parsedTime = d.Time.split(":");
+        d.Time = new Date(1970, 0, 1, 0, parsedTime[0], parsedTime[1]);
+      });
 
-      yScale.domain([
-        0,
-        d3.max(data, d => {
-          const time = d.Time.split(":");
-          return Number(time[0]);
+      const years = data.map(d => d.Year);
+      xScale.domain([d3.min(years) - 1, d3.max(years) + 1]);
+
+      yScale.domain(
+        d3.extent(data, function(d) {
+          return d.Time;
         })
-      ]);
+      );
 
-      // const indicesBetweenPoints = Math.round(data.data.length / 14);
       g.append("g")
         .attr("id", "x-axis")
         .attr("transform", `translate(0,${height})`)
-        .call(xAxis);
+        .call(xAxis.tickFormat(d3.format("d")))
+        .append("text")
+        .attr("class", "x-axis-label")
+        .attr("x", width)
+        .attr("y", -6)
+        .style("text-anchor", "end")
+        .text("Year");
 
       g.append("g")
         .attr("id", "y-axis")
-        .call(
-          yAxis.tickFormat(d => {
-            return formatMinutes(d);
-          })
-        )
+        .call(yAxis.tickFormat(formatTime))
         .append("text")
-        .attr("class", "ticks")
+        .attr("class", "label")
+        .attr("transform", "rotate(-90)")
         .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
-        .text("value");
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Best Time (minutes)");
 
       g.selectAll("circle")
         .data(data)
@@ -76,25 +74,15 @@ export default function ScatterplotGraph() {
         .attr("class", "dot")
         .attr("data-xvalue", d => d.Year)
         .attr("data-yvalue", d => {
-          const hhMM = d.Time.split(":");
-          const time = getDate(hhMM[0], hhMM[1]);
-          return time;
+          return d.Time.toISOString();
         })
         .attr("cx", function(d) {
           return xScale(d.Year);
         })
         .attr("cy", function(d) {
-          const hhMM = d.Time.split(":");
-          const time = getDate(hhMM[0], hhMM[1]);
-          return height - yScale(time.getMinutes() - time.getSeconds());
+          return yScale(d.Time);
         })
-        .attr("r", 6)
-        .attr("width", xScale.bandwidth())
-        .attr("height", function(d) {
-          const hhMM = d.Time.split(":");
-          const time = getDate(hhMM[0], hhMM[1]);
-          return height - yScale(time.getMinutes());
-        });
+        .attr("r", 6);
     });
   };
 
@@ -105,7 +93,7 @@ export default function ScatterplotGraph() {
   return (
     <div className="container">
       <header id="title">
-        <h1>Scappterplot Graph</h1>
+        <h1>Scatterplot Graph</h1>
       </header>
       <div id="scatterplot"></div>
     </div>
