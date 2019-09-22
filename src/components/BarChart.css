@@ -1,11 +1,3 @@
-.container {
-  grid-area: c;
-  width: 100%;
-  background: rgb(146, 146, 146);
-  text-align: center;
-  height: 100vh;
-}
-
 .bar {
   display: inline-block;
   fill: skyblue;
@@ -14,12 +6,6 @@
 
 .bar:hover {
   fill: brown;
-}
-
-svg {
-  background-color: whitesmoke;
-  height: 100vh;
-  text-align: center;
 }
 
 .tooltip {

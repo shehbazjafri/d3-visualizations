@@ -19,3 +19,17 @@ header {
   height: 64px;
   width: 100vw;
 }
+
+.container {
+  grid-area: c;
+  width: 100%;
+  background: whitesmoke;
+  text-align: center;
+  height: 100vh;
+}
+
+svg {
+  background-color: whitesmoke;
+  height: 100vh;
+  text-align: center;
+}

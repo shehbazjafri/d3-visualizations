@@ -5,7 +5,7 @@ import "./ScatterplotGraph.css";
 export default function ScatterplotGraph() {
   const drawChart = () => {
     const padding = 200;
-    const svgWidth = 800;
+    const svgWidth = 900;
     const svgHeight = 600;
     const width = svgWidth - padding;
     const height = svgHeight - padding;
@@ -16,58 +16,65 @@ export default function ScatterplotGraph() {
       .attr("width", svgWidth)
       .attr("height", svgHeight);
 
-    const xScale = d3
-      .scaleBand()
-      .range([0, width])
-      .padding(0.4);
+    const xScale = d3.scaleLinear().range([0, width]);
 
-    const yScale = d3.scaleLinear().range([height, 0]);
+    const yScale = d3.scaleTime().range([0, height]);
 
     const xAxis = d3.axisBottom(xScale);
     const yAxis = d3.axisLeft(yScale);
 
     const g = svg.append("g").attr("transform", `translate(${100},${100})`);
 
+    const color = d3.scaleOrdinal(d3.schemeCategory10);
+
     d3.json(
       "https://raw.githubusercontent.com/freeCodeCamp/ProjectReferenceData/master/cyclist-data.json"
     ).then(function(data) {
-      const formatTime = d3.timeFormat("%M:%S"),
-        formatMinutes = function(m, s = 0) {
-          return formatTime(new Date(2012, 0, 1, 0, m, s));
-        },
-        getDate = function(m, s) {
-          return new Date(2012, 0, 1, 0, m, s);
-        };
+      const formatTime = d3.timeFormat("%M:%S");
 
-      xScale.domain(data.map(d => d.Year));
+      data.forEach(function(d) {
+        d.Place = +d.Place;
+        var parsedTime = d.Time.split(":");
+        d.Time = new Date(1970, 0, 1, 0, parsedTime[0], parsedTime[1]);
+      });
 
-      yScale.domain([
-        0,
-        d3.max(data, d => {
-          const time = d.Time.split(":");
-          return Number(time[0]);
+      const years = data.map(d => d.Year);
+      xScale.domain([d3.min(years) - 1, d3.max(years) + 1]);
+
+      yScale.domain(
+        d3.extent(data, function(d) {
+          return d.Time;
         })
-      ]);
+      );
 
-      // const indicesBetweenPoints = Math.round(data.data.length / 14);
+      const tooltipDiv = d3
+        .select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .attr("id", "tooltip")
+        .style("opacity", 0);
+
       g.append("g")
         .attr("id", "x-axis")
         .attr("transform", `translate(0,${height})`)
-        .call(xAxis);
+        .call(xAxis.tickFormat(d3.format("d")))
+        .append("text")
+        .attr("class", "x-axis-label")
+        .attr("x", width)
+        .attr("y", -6)
+        .style("text-anchor", "end")
+        .text("Year");
 
       g.append("g")
         .attr("id", "y-axis")
-        .call(
-          yAxis.tickFormat(d => {
-            return formatMinutes(d);
-          })
-        )
+        .call(yAxis.tickFormat(formatTime))
         .append("text")
-        .attr("class", "ticks")
+        .attr("class", "label")
+        .attr("transform", "rotate(-90)")
         .attr("y", 6)
-        .attr("dy", "0.71em")
-        .attr("text-anchor", "end")
-        .text("value");
+        .attr("dy", ".71em")
+        .style("text-anchor", "end")
+        .text("Best Time (minutes)");
 
       g.selectAll("circle")
         .data(data)
@@ -76,24 +83,88 @@ export default function ScatterplotGraph() {
         .attr("class", "dot")
         .attr("data-xvalue", d => d.Year)
         .attr("data-yvalue", d => {
-          const hhMM = d.Time.split(":");
-          const time = getDate(hhMM[0], hhMM[1]);
-          return time;
+          return d.Time.toISOString();
         })
         .attr("cx", function(d) {
           return xScale(d.Year);
         })
         .attr("cy", function(d) {
-          const hhMM = d.Time.split(":");
-          const time = getDate(hhMM[0], hhMM[1]);
-          return height - yScale(time.getMinutes() - time.getSeconds());
+          return yScale(d.Time);
         })
         .attr("r", 6)
-        .attr("width", xScale.bandwidth())
-        .attr("height", function(d) {
-          const hhMM = d.Time.split(":");
-          const time = getDate(hhMM[0], hhMM[1]);
-          return height - yScale(time.getMinutes());
+        .style("fill", function(d) {
+          return color(d.Doping !== "");
+        })
+        .on("mouseover", function(d) {
+          tooltipDiv.style("opacity", 0.9);
+          tooltipDiv.attr("data-year", d.Year);
+          tooltipDiv
+            .html(
+              d.Name +
+                ": " +
+                d.Nationality +
+                "<br/>" +
+                "Year: " +
+                d.Year +
+                ", Time: " +
+                formatTime(d.Time) +
+                (d.Doping ? "<br/><br/>" + d.Doping : "")
+            )
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY - 28 + "px");
+        })
+        .on("mouseout", function(d) {
+          tooltipDiv.style("opacity", 0);
+        });
+
+      //title
+      svg
+        .append("text")
+        .attr("id", "title")
+        .attr("x", width / 2)
+        .attr("y", 0 - padding / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "30px")
+        .text("Doping in Professional Bicycle Racing");
+
+      //subtitle
+      svg
+        .append("text")
+        .attr("x", width / 2)
+        .attr("y", 0 - padding / 2 + 25)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+        .text("35 Fastest times up Alpe d'Huez");
+
+      const legend = svg
+        .selectAll(".legend")
+        .data(color.domain())
+        .enter()
+        .append("g")
+        .attr("class", "legend")
+        .attr("id", "legend")
+        .attr("transform", function(d, i) {
+          return "translate(0," + (height / 2 - i * 20) + ")";
+        });
+
+      legend
+        .append("rect")
+        .attr("x", width - 18)
+        .attr("width", 18)
+        .attr("height", 18)
+        .style("fill", color);
+
+      legend
+        .append("text")
+        .attr("x", width - 24)
+        .attr("y", 9)
+        .attr("dy", ".35em")
+        .style("text-anchor", "end")
+        .text(function(d) {
+          if (d) return "Riders with doping allegations";
+          else {
+            return "No doping allegations";
+          }
         });
     });
   };
@@ -104,8 +175,8 @@ export default function ScatterplotGraph() {
 
   return (
     <div className="container">
-      <header id="title">
-        <h1>Scappterplot Graph</h1>
+      <header>
+        <h1>Scatterplot Graph</h1>
       </header>
       <div id="scatterplot"></div>
     </div>
