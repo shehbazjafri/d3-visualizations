@@ -2,6 +2,7 @@ import React from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
 import BarChart from "./components/BarChart";
 import ScatterplotGraph from "./components/ScatterplotGraph";
+import HeatMap from "./components/HeatMap";
 import "./App.css";
 
 function App(props) {
@@ -27,12 +28,16 @@ function App(props) {
               >
                 Scatterplot Graph
               </button>
+              <button className="button" onClick={() => openVis("heat-map")}>
+                Heat Map
+              </button>
             </div>
           </React.Fragment>
         )}
       />
       <Route path="/bar-chart" render={props => <BarChart />} />
       <Route path="/scatterplot-graph" render={props => <ScatterplotGraph />} />
+      <Route path="/heat-map" render={props => <HeatMap />} />
     </div>
   );
 }
