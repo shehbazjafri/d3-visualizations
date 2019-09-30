@@ -27,16 +27,21 @@ export default function HeatMap() {
 
     d3.json(url).then(function(data) {
       // Format data
-
+      data.monthlyVariance.forEach(d => {
+        d.month -= 1;
+      });
       // Add heading to svg
-      const heading = svg.append("heading");
+      const heading = g.append("text");
       heading
-        .append("h1")
         .attr("id", "title")
+        .attr("x", width / 3)
+        .attr("y", 0 - padding / 3)
         .text("Monthly Global Land-Surface Temperature");
-      heading
-        .append("h3")
+
+      g.append("text")
         .attr("id", "description")
+        .attr("x", width / 3)
+        .attr("y", 0 - padding / 4)
         .html(
           data.monthlyVariance[0].year +
             " - " +
@@ -45,10 +50,42 @@ export default function HeatMap() {
             data.baseTemperature +
             "&#8451;"
         );
-      // Create tooltip with d3.tip
+
+      // Create tooltip
+      const tooltipDiv = d3
+        .select("body")
+        .append("div")
+        .attr("class", "tooltip")
+        .attr("id", "tooltip")
+        .style("opacity", 0);
+
       // Create x and y scales
+      const xScale = d3
+        .scaleBand()
+        .domain(data.monthlyVariance.map(d => d.year))
+        .range([0, width]);
+
       // Create x and y axis
+      const xAxis = d3
+        .axisBottom(xScale)
+        .tickValues(
+          xScale.domain().filter(function(year) {
+            //set ticks to years divisible by 10
+            return year % 10 === 0;
+          })
+        )
+        .tickFormat(function(year) {
+          var date = new Date(0);
+          date.setUTCFullYear(year);
+          return d3.timeFormat("%Y")(date);
+        })
+        .tickSize(10, 1);
+
       // Call x axis
+      g.append("g")
+        .attr("id", "x-axis")
+        .attr("transform", "translate(" + 10 + "," + (height + 50) + ")")
+        .call(xAxis);
       // Call y axis
       // Create and add legend
       // Create the heat map with rects
