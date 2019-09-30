@@ -65,6 +65,11 @@ export default function HeatMap() {
         .domain(data.monthlyVariance.map(d => d.year))
         .range([0, width]);
 
+      const yScale = d3
+        .scaleBand()
+        .domain([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
+        .range([0, height]);
+
       // Create x and y axis
       const xAxis = d3
         .axisBottom(xScale)
@@ -81,12 +86,25 @@ export default function HeatMap() {
         })
         .tickSize(10, 1);
 
+      const yAxis = d3
+        .axisLeft(yScale)
+        .tickValues(yScale.domain())
+        .tickFormat(function(month) {
+          const date = new Date(0);
+          date.setUTCMonth(month);
+          return d3.timeFormat("%B")(date);
+        })
+        .tickSize(10, 1);
       // Call x axis
       g.append("g")
         .attr("id", "x-axis")
         .attr("transform", "translate(" + 10 + "," + (height + 50) + ")")
         .call(xAxis);
       // Call y axis
+      g.append("g")
+        .attr("id", "y-axis")
+        .attr("transform", "translate(" + 10 + "," + 50 + ")")
+        .call(yAxis);
       // Create and add legend
       // Create the heat map with rects
     });
