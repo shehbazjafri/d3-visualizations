@@ -98,15 +98,38 @@ export default function HeatMap() {
       // Call x axis
       g.append("g")
         .attr("id", "x-axis")
-        .attr("transform", "translate(" + 10 + "," + (height + 50) + ")")
+        .attr("transform", "translate(" + -1 + "," + height + ")")
         .call(xAxis);
       // Call y axis
       g.append("g")
         .attr("id", "y-axis")
-        .attr("transform", "translate(" + 10 + "," + 50 + ")")
+        .attr("transform", "translate(" + -1 + "," + 0 + ")")
         .call(yAxis);
       // Create and add legend
       // Create the heat map with rects
+      g.selectAll()
+        .data(data.monthlyVariance)
+        .enter()
+        .append("rect")
+        .attr("class", "cell")
+        .attr("data-month", function(d) {
+          return d.month;
+        })
+        .attr("data-year", function(d) {
+          return d.year;
+        })
+        .attr("data-temp", function(d) {
+          return data.baseTemperature + d.variance;
+        })
+        .attr("x", function(d) {
+          return xScale(d.year);
+        })
+        .attr("y", function(d) {
+          return yScale(d.month);
+        })
+        .attr("width", xScale.bandwidth())
+        .attr("height", yScale.bandwidth())
+        .style("fill", "skyblue");
     });
   };
 
