@@ -26,6 +26,7 @@ header {
   background: whitesmoke;
   text-align: center;
   height: 100vh;
+  margin-top: 70px;
 }
 
 svg {
