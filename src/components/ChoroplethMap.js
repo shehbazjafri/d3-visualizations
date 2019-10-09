@@ -108,6 +108,20 @@ export default function ChoroplethMap() {
         .enter()
         .append("path")
         .attr("class", "county")
+        .attr("data-fips", function(d) {
+          return d.id;
+        })
+        .attr("data-education", function(d) {
+          var result = edu.filter(function(obj) {
+            return obj.fips === d.id;
+          });
+          if (result[0]) {
+            return result[0].bachelorsOrHigher;
+          }
+          //could not find a matching fips id in the data
+          console.log("could find data for: ", d.id);
+          return 0;
+        })
         .attr("fill", function(d) {
           var result = edu.filter(function(obj) {
             return obj.fips === d.id;
