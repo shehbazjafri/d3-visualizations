@@ -13,8 +13,6 @@ export default function ChoroplethMap() {
     //Tells the map how to draw the paths
     const path = d3.geoPath();
 
-    const unemployment = d3.map();
-
     // Create svg canvas
     const svg = d3
       .select("#choropleth")
@@ -94,12 +92,59 @@ export default function ChoroplethMap() {
       .select(".domain")
       .remove();
 
+    // Define the div for the tooltip
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .attr("id", "tooltip")
+      .style("opacity", 0);
+
     // Get data and render map
     Promise.all(files.map(url => d3.json(url))).then(function(values) {
       // Education data
       const edu = values[0];
       // US Counties
       const us = values[1];
+
+      // Mouseover tooltip event
+      const mouseover = function(d) {
+        tooltip
+          .style("opacity", 0.9)
+          .html(function() {
+            const result = edu.filter(function(obj) {
+              return obj.fips === d.id;
+            });
+            if (result[0]) {
+              return (
+                result[0]["area_name"] +
+                ", " +
+                result[0]["state"] +
+                ": " +
+                result[0].bachelorsOrHigher +
+                "%"
+              );
+            }
+            //could not find a matching fips id in the data
+            return 0;
+          })
+          .attr("data-education", function() {
+            const result = edu.filter(function(obj) {
+              return obj.fips === d.id;
+            });
+            if (result[0]) {
+              return result[0].bachelorsOrHigher;
+            }
+            //could not find a matching fips id in the data
+            return 0;
+          })
+          .style("left", d3.event.pageX + 10 + "px")
+          .style("top", d3.event.pageY - 28 + "px");
+      };
+
+      const mouseout = function(d) {
+        tooltip.style("opacity", 0);
+      };
 
       // Draw counties
       const counties = topojson.feature(us, us.objects.counties).features;
@@ -132,7 +177,9 @@ export default function ChoroplethMap() {
           //could not find a matching fips id in the data
           return color(0);
         })
-        .attr("d", path);
+        .attr("d", path)
+        .on("mouseover", mouseover)
+        .on("mouseout", mouseout);
 
       // Overlay state lines over counties
       const states = topojson.mesh(us, us.objects.states, function(a, b) {
