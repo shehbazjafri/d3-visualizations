@@ -1,0 +1,9 @@
+.county {
+  /* fill: none; */
+}
+.state {
+  fill: none;
+  stroke: black;
+  stroke-linejoin: round;
+  stroke-width: 0.5;
+}

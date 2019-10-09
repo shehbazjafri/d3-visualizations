@@ -1,31 +1,38 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import * as topojson from "topojson";
+import "./ChoroplethMap.css";
 
 export default function ChoroplethMap() {
   const drawChart = () => {
-    // Settings for svg canvas size
-    const padding = 200;
-    const svgWidth = 900;
-    const svgHeight = 600;
-    // Actual width and height of the graph spaced using padding
-    const width = svgWidth - padding;
-    const height = svgHeight - padding;
+    //Sets dimensions
+    const margin = { top: 0, left: 0, bottom: 0, right: 0 },
+      width = 1200 - margin.left - margin.right,
+      height = 400 - margin.top - margin.bottom;
+
+    //Tells the map how to draw the paths
+    const path = d3.geoPath();
+
+    const unemployment = d3.map();
 
     // Create svg canvas
     const svg = d3
       .select("#choropleth")
       .append("svg")
-      .attr("width", svgWidth)
-      .attr("height", svgHeight);
+      .attr("width", width)
+      .attr("height", height);
 
-    // Create group container on svg that will contain axes and graph
-    const g = svg.append("g").attr("transform", `translate(${100},${100})`);
+    // Create group container on svg that will contain the map
+    const g = svg.append("g").attr("transform", `translate(${0},${0})`);
 
+    // Data files
     const eduData =
       "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json";
-    const countData =
+    const countyData =
       "https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/counties.json";
+    const files = [eduData, countyData];
 
+    // Create and add legend
     const xScale = d3
       .scaleLinear()
       .domain([2.6, 75.1])
@@ -36,7 +43,6 @@ export default function ChoroplethMap() {
       .domain(d3.range(2.6, 75.1, (75.1 - 2.6) / 8))
       .range(d3.schemeGreens[9]);
 
-    // Create and add legend
     const legend = svg
       .append("g")
       .attr("class", "key")
@@ -87,7 +93,45 @@ export default function ChoroplethMap() {
       )
       .select(".domain")
       .remove();
+
+    // Get data and render map
+    Promise.all(files.map(url => d3.json(url))).then(function(values) {
+      // Education data
+      const edu = values[0];
+      // US Counties
+      const us = values[1];
+
+      // Draw counties
+      const counties = topojson.feature(us, us.objects.counties).features;
+      g.selectAll("path")
+        .data(counties)
+        .enter()
+        .append("path")
+        .attr("class", "county")
+        .attr("fill", function(d) {
+          var result = edu.filter(function(obj) {
+            return obj.fips === d.id;
+          });
+          if (result[0]) {
+            return color(result[0].bachelorsOrHigher);
+          }
+          //could not find a matching fips id in the data
+          return color(0);
+        })
+        .attr("d", path);
+
+      // Overlay state lines over counties
+      const states = topojson.mesh(us, us.objects.states, function(a, b) {
+        return a !== b;
+      });
+
+      g.append("path")
+        .datum(states)
+        .attr("class", "state")
+        .attr("d", path);
+    });
   };
+
   useEffect(() => {
     drawChart();
   }, []);
