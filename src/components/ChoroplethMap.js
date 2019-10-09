@@ -155,6 +155,11 @@ export default function ChoroplethMap() {
       <header>
         <h1>Choropleth Map</h1>
       </header>
+      <h1 id="title">United States Educational Attainment</h1>
+      <div id="description">
+        Percentage of adults age 25 and older with a bachelor's degree or higher
+        (2010-2014)
+      </div>
       <div id="choropleth"></div>
     </div>
   );
