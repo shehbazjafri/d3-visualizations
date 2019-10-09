@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import BarChart from "./components/BarChart";
 import ScatterplotGraph from "./components/ScatterplotGraph";
 import HeatMap from "./components/HeatMap";
+import ChoroplethMap from "./components/ChoroplethMap";
 import "./App.css";
 
 function App(props) {
@@ -31,6 +32,12 @@ function App(props) {
               <button className="button" onClick={() => openVis("heat-map")}>
                 Heat Map
               </button>
+              <button
+                className="button"
+                onClick={() => openVis("choropleth-map")}
+              >
+                Choropleth Map
+              </button>
             </div>
           </React.Fragment>
         )}
@@ -38,6 +45,7 @@ function App(props) {
       <Route path="/bar-chart" render={props => <BarChart />} />
       <Route path="/scatterplot-graph" render={props => <ScatterplotGraph />} />
       <Route path="/heat-map" render={props => <HeatMap />} />
+      <Route path="/choropleth-map" render={props => <ChoroplethMap />} />
     </div>
   );
 }
