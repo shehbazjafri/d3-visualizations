@@ -4,6 +4,7 @@ import BarChart from "./components/BarChart";
 import ScatterplotGraph from "./components/ScatterplotGraph";
 import HeatMap from "./components/HeatMap";
 import ChoroplethMap from "./components/ChoroplethMap";
+import TreeMap from "./components/TreeMap";
 import "./App.css";
 
 function App(props) {
@@ -38,6 +39,12 @@ function App(props) {
               >
                 Choropleth Map
               </button>
+              <button
+                className="button"
+                onClick={() => openVis("treemap-diagram")}
+              >
+                Tree Map
+              </button>
             </div>
           </React.Fragment>
         )}
@@ -46,6 +53,7 @@ function App(props) {
       <Route path="/scatterplot-graph" render={props => <ScatterplotGraph />} />
       <Route path="/heat-map" render={props => <HeatMap />} />
       <Route path="/choropleth-map" render={props => <ChoroplethMap />} />
+      <Route path="/treemap-diagram" render={props => <TreeMap />} />
     </div>
   );
 }
