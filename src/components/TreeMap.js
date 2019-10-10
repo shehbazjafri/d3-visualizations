@@ -1,12 +1,13 @@
 import React, { useEffect } from "react";
 import * as d3 from "d3";
+import "./TreeMap.css";
 
 export default function TreeMap() {
   const drawChart = () => {
     //Sets dimensions
     const margin = { top: 0, left: 0, bottom: 0, right: 0 },
-      width = 1200 - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
+      width = 1300 - margin.left - margin.right,
+      height = 600 - margin.top - margin.bottom;
 
     // Create svg canvas
     const svg = d3
@@ -14,9 +15,6 @@ export default function TreeMap() {
       .append("svg")
       .attr("width", width)
       .attr("height", height);
-
-    // Create group container on svg that will contain the map
-    const g = svg.append("g").attr("transform", `translate(${0},${0})`);
 
     // Define treemap
     const treemap = d3
@@ -50,10 +48,22 @@ export default function TreeMap() {
       // Computes the position of each element in the hierarchy
       treemap(root);
 
-      // Add rectangles
-      g.selectAll("rect")
+      // Add containers
+      const cell = svg
+        .selectAll("g")
         .data(root.leaves())
         .enter()
+        .append("g")
+        .attr("class", "group")
+        .attr("transform", function(d) {
+          return "translate(" + d.x0 + "," + d.y0 + ")";
+        });
+
+      //  ALternatively, rects can be added without using g containers by appending rects with root.leaves() data and using x and y properties
+      // instead of using transform for g containers
+
+      // Add rects
+      cell
         .append("rect")
         .attr("class", "tile")
         .attr("data-name", function(d) {
@@ -65,12 +75,6 @@ export default function TreeMap() {
         .attr("data-value", function(d) {
           return d.data.value;
         })
-        .attr("x", function(d) {
-          return d.x0;
-        })
-        .attr("y", function(d) {
-          return d.y0;
-        })
         .attr("width", function(d) {
           return d.x1 - d.x0;
         })
@@ -80,6 +84,24 @@ export default function TreeMap() {
         .style("stroke", "black")
         .style("fill", function(d) {
           return color(d.data.category);
+        });
+
+      // Add text
+      cell
+        .append("text")
+        .attr("class", "tile-text")
+        .selectAll("tspan")
+        .data(function(d) {
+          return d.data.name.split(/(?=[A-Z][^A-Z])/g);
+        })
+        .enter()
+        .append("tspan")
+        .attr("x", 4)
+        .attr("y", function(d, i) {
+          return 13 + i * 10;
+        })
+        .text(function(d) {
+          return d;
         });
     });
   };
