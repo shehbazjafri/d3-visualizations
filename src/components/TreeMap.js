@@ -17,6 +17,71 @@ export default function TreeMap() {
 
     // Create group container on svg that will contain the map
     const g = svg.append("g").attr("transform", `translate(${0},${0})`);
+
+    // Define treemap
+    const treemap = d3
+      .treemap()
+      .size([width, height])
+      .paddingInner(1);
+
+    const fader = function(color) {
+      return d3.interpolateRgb(color, "#fff")(0.1);
+    };
+
+    const color = d3.scaleOrdinal(d3.schemeSet3.map(fader));
+
+    const url =
+      "https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/video-game-sales-data.json";
+
+    d3.json(url).then(function(data) {
+      // Root
+      const root = d3
+        .hierarchy(data)
+        .eachBefore(function(d) {
+          d.data.id = (d.parent ? d.parent.data.id + "." : "") + d.data.name;
+        })
+        .sum(function(d) {
+          return d.value;
+        })
+        .sort(function(a, b) {
+          return b.height - a.height || b.value - a.value;
+        });
+
+      // Computes the position of each element in the hierarchy
+      treemap(root);
+
+      // Add rectangles
+      g.selectAll("rect")
+        .data(root.leaves())
+        .enter()
+        .append("rect")
+        .attr("class", "tile")
+        .attr("data-name", function(d) {
+          return d.data.name;
+        })
+        .attr("data-category", function(d) {
+          return d.data.category;
+        })
+        .attr("data-value", function(d) {
+          return d.data.value;
+        })
+        .attr("x", function(d) {
+          return d.x0;
+        })
+        .attr("y", function(d) {
+          return d.y0;
+        })
+        .attr("width", function(d) {
+          return d.x1 - d.x0;
+        })
+        .attr("height", function(d) {
+          return d.y1 - d.y0;
+        })
+        .style("stroke", "black")
+        .style("fill", function(d) {
+          return color(d.data.category);
+        });
+    });
   };
 
   useEffect(() => {
