@@ -28,10 +28,38 @@ export default function TreeMap() {
 
     const color = d3.scaleOrdinal(d3.schemeSet3.map(fader));
 
+    // Define the div for the tooltip
+    const tooltip = d3
+      .select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .attr("id", "tooltip")
+      .style("opacity", 0);
+
     const url =
       "https://cdn.rawgit.com/freeCodeCamp/testable-projects-fcc/a80ce8f9/src/data/tree_map/video-game-sales-data.json";
 
     d3.json(url).then(function(data) {
+      const mousemove = function(d) {
+        tooltip
+          .style("opacity", 0.9)
+          .html(
+            "Name: " +
+              d.data.name +
+              "<br>Category: " +
+              d.data.category +
+              "<br>Value: " +
+              d.data.value
+          )
+          .attr("data-value", d.data.value)
+          .style("left", d3.event.pageX + 10 + "px")
+          .style("top", d3.event.pageY - 28 + "px");
+      };
+
+      const mouseout = function(d) {
+        tooltip.style("opacity", 0);
+      };
+
       // Root
       const root = d3
         .hierarchy(data)
@@ -84,7 +112,9 @@ export default function TreeMap() {
         .style("stroke", "black")
         .style("fill", function(d) {
           return color(d.data.category);
-        });
+        })
+        .on("mousemove", mousemove)
+        .on("mouseout", mouseout);
 
       // Add text
       cell
