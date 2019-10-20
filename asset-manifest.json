@@ -1,15 +1,20 @@
 {
   "files": {
-    "main.css": "/d3-visualizations/static/css/main.8445e1bf.chunk.css",
-    "main.js": "/d3-visualizations/static/js/main.e8cd8bbb.chunk.js",
-    "main.js.map": "/d3-visualizations/static/js/main.e8cd8bbb.chunk.js.map",
+    "main.css": "/d3-visualizations/static/css/main.583412dc.chunk.css",
+    "main.js": "/d3-visualizations/static/js/main.2c27063e.chunk.js",
+    "main.js.map": "/d3-visualizations/static/js/main.2c27063e.chunk.js.map",
     "runtime~main.js": "/d3-visualizations/static/js/runtime~main.cdffeb06.js",
     "runtime~main.js.map": "/d3-visualizations/static/js/runtime~main.cdffeb06.js.map",
-    "static/js/2.9cebb603.chunk.js": "/d3-visualizations/static/js/2.9cebb603.chunk.js",
-    "static/js/2.9cebb603.chunk.js.map": "/d3-visualizations/static/js/2.9cebb603.chunk.js.map",
+    "static/js/2.4f7f3224.chunk.js": "/d3-visualizations/static/js/2.4f7f3224.chunk.js",
+    "static/js/2.4f7f3224.chunk.js.map": "/d3-visualizations/static/js/2.4f7f3224.chunk.js.map",
     "index.html": "/d3-visualizations/index.html",
-    "precache-manifest.fe9647f5fa527bdd0444e6af485768a5.js": "/d3-visualizations/precache-manifest.fe9647f5fa527bdd0444e6af485768a5.js",
+    "precache-manifest.3b6761fab0895bcef105fe9e0bf0f810.js": "/d3-visualizations/precache-manifest.3b6761fab0895bcef105fe9e0bf0f810.js",
     "service-worker.js": "/d3-visualizations/service-worker.js",
-    "static/css/main.8445e1bf.chunk.css.map": "/d3-visualizations/static/css/main.8445e1bf.chunk.css.map"
+    "static/css/main.583412dc.chunk.css.map": "/d3-visualizations/static/css/main.583412dc.chunk.css.map",
+    "static/media/barchart.svg": "/d3-visualizations/static/media/barchart.2fb1f7d4.svg",
+    "static/media/globe.svg": "/d3-visualizations/static/media/globe.7a259384.svg",
+    "static/media/heatmap.svg": "/d3-visualizations/static/media/heatmap.c2e4cfa2.svg",
+    "static/media/scatterplot.svg": "/d3-visualizations/static/media/scatterplot.7d467cbb.svg",
+    "static/media/treemap.svg": "/d3-visualizations/static/media/treemap.f5d54090.svg"
   }
 }
