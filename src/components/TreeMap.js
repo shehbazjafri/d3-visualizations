@@ -201,7 +201,7 @@ export default function TreeMap() {
   return (
     <div className="container">
       <header>
-        <h1>Tree Map</h1>
+        <span>Tree Map</span>
       </header>
       <h1 id="title">Video Game Sales</h1>
       <div id="description">
