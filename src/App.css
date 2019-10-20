@@ -25,7 +25,8 @@ header {
   font-size: 32px;
   color: white;
   font-weight: bolder;
-  border-bottom: 1px solid white;
+  padding-top: 10px;
+  padding-left: 30px;
 }
 
 .container {
