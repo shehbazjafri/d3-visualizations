@@ -8,7 +8,7 @@ export default function ChoroplethMap() {
     //Sets dimensions
     const margin = { top: 0, left: 0, bottom: 0, right: 0 },
       width = 1200 - margin.left - margin.right,
-      height = 400 - margin.top - margin.bottom;
+      height = 600 - margin.top - margin.bottom;
 
     //Tells the map how to draw the paths
     const path = d3.geoPath();
@@ -200,7 +200,7 @@ export default function ChoroplethMap() {
   return (
     <div className="container">
       <header>
-        <h1>Choropleth Map</h1>
+        <span>Choropleth Map</span>
       </header>
       <h1 id="title">United States Educational Attainment</h1>
       <div id="description">
