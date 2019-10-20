@@ -155,26 +155,6 @@ export default function HeatMap() {
       data.monthlyVariance.forEach(d => {
         d.month -= 1;
       });
-      // Add heading to svg
-      const heading = g.append("text");
-      heading
-        .attr("id", "title")
-        .attr("x", width / 3)
-        .attr("y", 0 - padding / 3)
-        .text("Monthly Global Land-Surface Temperature");
-
-      g.append("text")
-        .attr("id", "description")
-        .attr("x", width / 3)
-        .attr("y", 0 - padding / 4)
-        .html(
-          data.monthlyVariance[0].year +
-            " - " +
-            data.monthlyVariance[data.monthlyVariance.length - 1].year +
-            ": base temperature " +
-            data.baseTemperature +
-            "&#8451;"
-        );
 
       // Create tooltip
       const tooltipDiv = d3
@@ -381,8 +361,10 @@ export default function HeatMap() {
   return (
     <div className="container">
       <header>
-        <h1>Heat Map</h1>
+        <span>Heat Map</span>
       </header>
+      <h1 id="title">Monthly Global Land-Surface Temperature</h1>
+      <h3 id="description">1753 - 2015: base temperature 8.66℃</h3>
       <div id="heatmap"></div>
     </div>
   );
