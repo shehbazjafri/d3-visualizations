@@ -120,7 +120,9 @@ export default function BarChart() {
   }, []);
   return (
     <div className="container">
-      <header>Bar Chart</header>
+      <header>
+        <span>Bar Chart</span>
+      </header>
       <h1 id="title">United States GDP</h1>
       <div id="barchart"></div>
     </div>

@@ -117,25 +117,6 @@ export default function ScatterplotGraph() {
           tooltipDiv.style("opacity", 0);
         });
 
-      //title
-      svg
-        .append("text")
-        .attr("id", "title")
-        .attr("x", width / 2)
-        .attr("y", 0 - padding / 2)
-        .attr("text-anchor", "middle")
-        .style("font-size", "30px")
-        .text("Doping in Professional Bicycle Racing");
-
-      //subtitle
-      svg
-        .append("text")
-        .attr("x", width / 2)
-        .attr("y", 0 - padding / 2 + 25)
-        .attr("text-anchor", "middle")
-        .style("font-size", "20px")
-        .text("35 Fastest times up Alpe d'Huez");
-
       const legend = svg
         .selectAll(".legend")
         .data(color.domain())
@@ -176,8 +157,10 @@ export default function ScatterplotGraph() {
   return (
     <div className="container">
       <header>
-        <h1>Scatterplot Graph</h1>
+        <span>Scatterplot Graph</span>
       </header>
+      <h1 id="title"> Doping in Professional Bicycle Racing</h1>
+      <h3 id="description"> 35 Fastest times up Alpe d'Huez </h3>
       <div id="scatterplot"></div>
     </div>
   );
