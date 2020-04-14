@@ -1,4 +1,4 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A collection of D3 visualizations.
 
 ## Available Scripts
 
